@@ -192,7 +192,7 @@ class ProjectionLayer(nn.Module):
             # (Batch, seq_len, d_model) --> (Batch, seq_len, vocab_size)
             return torch.log_softmax(self.proj(x),dim=-1)
       
-class Transformer():
+class Transformer(nn.Module):
       def __init__(self, encoder : Encoder, decoder : Decoder, src_embedding : InputEmbedding, target_embedding : InputEmbedding, src_pos : PositionalEncoding, target_pos : PositionalEncoding, projection_layer : ProjectionLayer):
             super().__init__()
             self.encoder=encoder
@@ -204,7 +204,7 @@ class Transformer():
             self.projection_layer=projection_layer
 
 
-       #  we inferencing we reuse the output of the encoder, hence we won't write out forward pass in succession
+       #  while inferencing we reuse the output of the encoder, hence we won't write out forward pass in succession
       def encode(self,src,src_mask):
             src = self.src_embed(src)
             src=self.src_pos(src)
@@ -260,9 +260,6 @@ def build_transformer(src_vocab_size : int, target_vocab_size : int, src_seq_len
                   nn.init.xavier_uniform_(p)
 
       return transformer
-
-
-
       
       
 
