@@ -14,9 +14,15 @@ class BilingualDataset(Dataset):
         self.src_lang = src_lang
         self.tgt_lang = tgt_lang
 
-        self.sos_token = torch.tensor([tokenizer_src.token_to_id('[SOS]')], dtype=torch.int64)
-        self.eos_token = torch.tensor([tokenizer_src.token_to_id('[EOS]')], dtype=torch.int64)
-        self.pad_token = torch.tensor([tokenizer_src.token_to_id('[PAD]')], dtype=torch.int64)
+        # Source-side special tokens
+        self.sos_src = torch.tensor([tokenizer_src.token_to_id('[SOS]')], dtype=torch.int64)
+        self.eos_src = torch.tensor([tokenizer_src.token_to_id('[EOS]')], dtype=torch.int64)
+        self.pad_src = torch.tensor([tokenizer_src.token_to_id('[PAD]')], dtype=torch.int64)
+
+        # Target-side special tokens
+        self.sos_tgt = torch.tensor([tokenizer_tgt.token_to_id('[SOS]')], dtype=torch.int64)
+        self.eos_tgt = torch.tensor([tokenizer_tgt.token_to_id('[EOS]')], dtype=torch.int64)
+        self.pad_tgt = torch.tensor([tokenizer_tgt.token_to_id('[PAD]')], dtype=torch.int64)
     
     def __len__(self):
         return len(self.ds)
@@ -36,38 +42,42 @@ class BilingualDataset(Dataset):
         if enc_num_padding_tokens < 0 or dec_num_padding_tokens < 0:
             raise ValueError('sentence is too long')
         
+        # Encoder input (SRC specials)
         encoder_input = torch.cat([
-            self.sos_token,
+            self.sos_src,
             torch.tensor(enc_input_tokens, dtype=torch.int64),
-            self.eos_token,
-            torch.tensor([self.pad_token.item()] * enc_num_padding_tokens, dtype=torch.int64)
+            self.eos_src,
+            torch.tensor([self.pad_src.item()] * enc_num_padding_tokens, dtype=torch.int64)
         ])
 
+        # Decoder input (TGT specials)
         decoder_input = torch.cat([
-            self.sos_token,
+            self.sos_tgt,
             torch.tensor(dec_input_tokens, dtype=torch.int64),
-            torch.tensor([self.pad_token.item()] * dec_num_padding_tokens, dtype=torch.int64)
+            torch.tensor([self.pad_tgt.item()] * dec_num_padding_tokens, dtype=torch.int64)
         ])
-         
+
+        # Label (TGT specials)
         label = torch.cat([
             torch.tensor(dec_input_tokens, dtype=torch.int64),
-            self.eos_token,
-            torch.tensor([self.pad_token.item()] * dec_num_padding_tokens, dtype=torch.int64)
+            self.eos_tgt,
+            torch.tensor([self.pad_tgt.item()] * dec_num_padding_tokens, dtype=torch.int64)
         ])
 
         assert encoder_input.size(0) == self.seq_len
         assert decoder_input.size(0) == self.seq_len
         assert label.size(0) == self.seq_len
 
+        # Masks (use the right PAD for each side)
         return {
-            'encoder_input': encoder_input,  # (seq_len)
-            'decoder_input': decoder_input,  # (seq_len)
-            'encoder_mask': (encoder_input != self.pad_token).unsqueeze(0).unsqueeze(0).int(),  # (1, 1, seq_len)
-            'decoder_mask': (decoder_input != self.pad_token).unsqueeze(0).unsqueeze(0).int() & causal_mask(decoder_input.size(0)),  # (1, seq_len, seq_len)
+            'encoder_input': encoder_input,
+            'decoder_input': decoder_input,
+            'encoder_mask': (encoder_input != self.pad_src).unsqueeze(0).unsqueeze(0).int(),
+            'decoder_mask': (decoder_input != self.pad_tgt).unsqueeze(0).unsqueeze(0).int() & causal_mask(decoder_input.size(0)),
             'label': label,
             'src_txt': src_txt,
-            'tgt_txt': tgt_txt 
-        }   
+            'tgt_txt': tgt_txt
+        }  
     
 def causal_mask(size):
     mask = torch.triu(torch.ones(1, size, size), diagonal=1).type(torch.int)

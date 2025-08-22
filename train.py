@@ -8,12 +8,14 @@ from tokenizers.trainers import WordLevelTrainer
 from tokenizers.pre_tokenizers import Whitespace
 from dataset import BilingualDataset, causal_mask
 import tqdm 
-from torch.utils.tensorboard import SummaryWriter
 from model import build_transformer
 from config import get_weights_file_path, get_config
 import warnings
 from pathlib import Path
+import wandb
 import torchmetrics
+from torchmetrics import CharErrorRate, WordErrorRate
+from torchmetrics.text.bleu import BLEUScore   
 
 def greedy_decode(model, source, source_mask, tokenizer_src, tokenizer_tgt,max_len, device ):
     sos_idx = tokenizer_tgt.token_to_id('[SOS]')
@@ -38,10 +40,14 @@ def greedy_decode(model, source, source_mask, tokenizer_src, tokenizer_tgt,max_l
         prob = model.project(out[:,-1])
         
         # using greedy search and selecting token with max probability
-        _, next_word = torch.max(prob, dim = 1)
-        decoder_input = torch.cat([decoder_input,torch.empty(1,1).type_as(source).fill_(next_word.item()).to(device)], dim = 1) 
+        _, next_word = torch.max(prob, dim=1)           # next_word: shape (1,)
+        next_id = next_word.item()                      # ✅ scalar int
+        decoder_input = torch.cat(
+            [decoder_input, torch.empty(1,1).type_as(source).fill_(next_id).to(device)],
+            dim=1
+        )
         
-        if next_word == eos_idx:
+        if next_id == eos_idx:
             break
     
     return decoder_input.squeeze(0)
@@ -68,7 +74,7 @@ def run_validation(model,validation_ds, tokenizer_src, tokenizer_tgt, max_len,de
             
             source_text = batch['src_txt'][0]
             target_text = batch['tgt_txt'][0]
-            model_out_text = tokenizer_tgt.decode(model_out.detach().cpu().numpy())
+            model_out_text = tokenizer_tgt.decode(model_out.detach().cpu().tolist())
             
             source_texts.append(source_text)
             expected.append(target_text)
@@ -83,26 +89,23 @@ def run_validation(model,validation_ds, tokenizer_src, tokenizer_tgt, max_len,de
             if count == num_examples:
                 break
             
-    if writer:
-        # Evaluate the character error rate
-        # This is the fraction of characters that are wrong
-        metric = torchmetrics.CharErrorRate()
-        cer = metric(predicted, expected)
-        writer.add_scalar('validation cer', cer, global_state)
-        writer.flush()
+    if len(predicted) > 0:
+        cer = torchmetrics.CharErrorRate()(predicted, expected).item()
+        wer = torchmetrics.WordErrorRate()(predicted, expected).item()
 
-        # Compute the word error rate
-        metric = torchmetrics.WordErrorRate()
-        wer = metric(predicted, expected)
-        writer.add_scalar('validation wer', wer, global_state)
-        writer.flush()
+        preds_tok = [p.split() for p in predicted]
+        refs_tok = [[e.split()] for e in expected]
+        bleu = BLEUScore()(preds_tok, refs_tok).item()
 
-        # Compute the BLEU metric
-        metric = torchmetrics.BLEUScore()
-        bleu = metric(predicted, expected)
-        writer.add_scalar('validation BLEU', bleu, global_state)
-        writer.flush()
+        wandb.log({'val/cer': cer, 'val/wer': wer, 'val/bleu': bleu, 'step': global_state})
         
+        # (Optional) log a few examples
+        examples = []
+        for s, t, p in zip(source_texts, expected, predicted):
+            examples.append({'source': s, 'target': t, 'predicted': p})
+        if examples:
+            wandb.log({'samples': wandb.Table(data=examples, columns=['source','target','predicted']),
+                       'step': global_state})
             
 def get_all_sentences(ds, lang):
     for item in ds:
