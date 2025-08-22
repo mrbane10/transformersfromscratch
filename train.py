@@ -87,7 +87,6 @@ def run_validation(model,validation_ds, tokenizer_src, tokenizer_tgt, max_len,de
         cer = torchmetrics.CharErrorRate()(predicted, expected).item()
         wer = torchmetrics.WordErrorRate()(predicted, expected).item()
 
-        # ✅ Fixed BLEU calculation - let the library handle tokenization
         bleu = BLEUScore()(predicted, expected).item()
 
         wandb.log({'val/cer': cer, 'val/wer': wer, 'val/bleu': bleu, 'step': global_state})
@@ -164,11 +163,18 @@ def train_model(config):
     device = torch.device('cuda' if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else 'cpu')
     print(f'Using device {device}')
 
+    
     Path(config['model_folder']).mkdir(parents=True, exist_ok=True)
 
     train_dataloader, val_dataloader, tokenizer_src, tokenizer_tgt = get_ds(config)
     model = get_model(config, tokenizer_src.get_vocab_size(), tokenizer_tgt.get_vocab_size()).to(device)
 
+    # 👈 added: print number of parameters
+    total_params = sum(p.numel() for p in model.parameters())
+    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print(f"Total parameters: {total_params:,}")
+    print(f"Trainable parameters: {trainable_params:,}")
+    
     # ✅ Initialize W&B
     wandb.init(project="transformer-nmt", config=config)
     wandb.watch(model, log="all")
