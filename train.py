@@ -16,8 +16,9 @@ from pathlib import Path
 import torchmetrics
 
 def greedy_decode(model, source, source_mask, tokenizer_src, tokenizer_tgt,max_len, device ):
-    sos_idx = tokenizer_tgt.token_to_id(['SOS'])
-    eos_idx = tokenizer_tgt.token_to_id(['EOS'])
+    sos_idx = tokenizer_tgt.token_to_id('[SOS]')
+    eos_idx = tokenizer_tgt.token_to_id('[EOS]')
+
     
     # Precompute the encoder output and reuse for every token we get from the decoder
     encoder_output = model.encode(source,source_mask)
@@ -34,7 +35,7 @@ def greedy_decode(model, source, source_mask, tokenizer_src, tokenizer_tgt,max_l
         out = model.decode(encoder_output,source_mask, decoder_input, decoder_mask)
         
         # predict the next token
-        prob = model.project(out[::,-1])
+        prob = model.project(out[:,-1])
         
         # using greedy search and selecting token with max probability
         _, next_word = torch.max(prob, dim = 1)
@@ -69,9 +70,9 @@ def run_validation(model,validation_ds, tokenizer_src, tokenizer_tgt, max_len,de
             target_text = batch['tgt_text'][0]
             model_out_text = tokenizer_tgt.decode(model_out.detach().cpu().numpy())
             
-            # source_texts.append(source_text)
-            # expected.append(target_text)
-            # predicted.append(model_out_text)
+            source_texts.append(source_text)
+            expected.append(target_text)
+            predicted.append(model_out_text)
 
             # print to the console 
             print_msg("-"*console_width)
