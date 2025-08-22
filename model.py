@@ -180,7 +180,7 @@ class ProjectionLayer(nn.Module):
       
     def forward(self, x):
         # (Batch, seq_len, d_model) --> (Batch, seq_len, vocab_size)
-        return torch.log_softmax(self.proj(x), dim=-1) # use the log operation for numerical stability
+        return self.proj(x) # use the log operation for numerical stability
       
 class Transformer(nn.Module):
     def __init__(self, encoder: Encoder, decoder: Decoder, src_embedding: InputEmbedding, 
