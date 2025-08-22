@@ -14,6 +14,7 @@ from config import get_weights_file_path, get_config
 import warnings
 from pathlib import Path
 
+
 def get_all_sentences(ds, lang):
     for item in ds:
         yield item['translation'][lang]
@@ -32,7 +33,8 @@ def get_or_build_tokenizer(config, ds, lang):
     return tokenizer
 
 def get_ds(config):
-    ds_raw = load_dataset('opus_books', f"{config['lang_src']}-{config['lang_tgt']}", split='train')
+    ds_raw = load_dataset('Helsinki-NLP/opus-100', f"{config['lang_src']}-{config['lang_tgt']}", split='train')
+    ds_raw = ds_raw.shuffle(seed=42).select(range(35000))
 
      # Build tokenizers
     tokenizer_src = get_or_build_tokenizer(config, ds_raw, config['lang_src'])
