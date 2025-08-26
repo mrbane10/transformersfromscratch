@@ -1,6 +1,6 @@
 # English to Urdu Transformer from Scratch
 
-A complete implementation of the Transformer architecture from scratch using PyTorch for English-to-Urdu neural machine translation. This project demonstrates a full end-to-end implementation including model architecture, training pipeline, evaluation metrics, and inference capabilities.
+A complete implementation of the Transformer architecture from scratch using PyTorch for English to Urdu neural machine translation. This project demonstrates a full end-to-end implementation including model architecture, training pipeline, evaluation metrics, and inference capabilities.
 
 ## 🎯 Project Overview
 
@@ -10,11 +10,11 @@ This project implements the original Transformer architecture as described in "A
 
 *   **Complete Transformer Implementation**: Built from scratch with all components (Multi-Head Attention, Positional Encoding, Feed-Forward Networks, etc.)
 *   **Bilingual Translation**: English to Urdu translation with proper tokenization for both languages
-*   **Comprehensive Evaluation**: Multiple metrics including BLEU, CER, and WER
+*   **Comprehensive Evaluation**: Multiple metrics including BLEU, CER, and WER 
 *   **Training Pipeline**: Full training loop with validation, checkpointing, and monitoring
-*   **Inference Support**: Easy-to-use translation interface for new text
+*   **Inference Support**: Easy to use translation interface for new text
 
-## 📊 Model Performance
+## 📊 Model Performance on the validation dataset
 
 | Metric | Score |
 | --- | --- |
@@ -31,7 +31,7 @@ The model implements the standard Transformer architecture with:
 *   **Multi-Head Attention**: 8 attention heads
 *   **Model Dimension**: 512
 *   **Feed-Forward Dimension**: 2048
-*   **Maximum Sequence Length**: 350-410 tokens
+*   **Maximum Sequence Length**: 410 tokens
 *   **Vocabulary**: Dynamic based on training corpus
 
 ## 🚀 Quick Start
@@ -40,7 +40,6 @@ The model implements the standard Transformer architecture with:
 
 bash
 
-    pip install torch torchvision torchaudio
     pip install datasets tokenizers
     pip install wandb torchmetrics nltk
     pip install tqdm pathlib
@@ -90,9 +89,7 @@ python
     ├── model.py              # Transformer architecture implementation
     ├── config.py             # Configuration settings
     ├── dataset.py            # Dataset handling and preprocessing
-    ├── weights/              # Model checkpoints
-    ├── tokenizers/           # Trained tokenizers
-    └── README.md            # This file
+    └── README.md             # This file
 
 ## 🔧 Configuration
 
@@ -104,7 +101,7 @@ python
         'batch_size': 8,          # Training batch size
         'num_epochs': 20,         # Number of training epochs
         'lr': 1e-4,              # Learning rate
-        'seq_len': 350,          # Maximum sequence length
+        'seq_len': 410,          # Maximum sequence length
         'd_model': 512,          # Model dimension
         'lang_src': 'en',        # Source language
         'lang_tgt': 'ur',        # Target language
@@ -164,14 +161,6 @@ The model is evaluated using multiple metrics:
 *   **Character Error Rate (CER)**: Character-level accuracy
 *   **Word Error Rate (WER)**: Word-level accuracy
 *   **Training Loss**: Cross-entropy loss during training
-
-## 🌟 Sample Translations
-
-| English | Urdu |
-| --- | --- |
-| "Hello, how are you?" | "خوش ؟" |
-| "What is your name?" | "تمہارا نام کیا ہے ؟" |
-| "This is a great day!" | "یہ ایک بہت بڑی آفتوں میں سے ایک دن ہے" |
 
 ## 🔬 Technical Details
 
@@ -261,16 +250,6 @@ python
             'lr': 5e-5,           # Different learning rate
         }
 
-## 🔍 Model Analysis
-
-### Attention Visualization
-
-The model stores attention weights for analysis:
-
-python
-
-    # Access attention scores from the model
-    attention_scores = model.encoder.layers[0].self_attention_block.attention_scores
 
 ### Performance Monitoring
 
@@ -278,26 +257,13 @@ python
 *   Validation metrics improve consistently
 *   BLEU score reaches 0.44, indicating good translation quality
 
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. Areas for improvement:
-
-*   Beam search decoding for better inference
-*   Attention visualization tools
-*   Support for more language pairs
-*   Model compression techniques
-*   Advanced training strategies
-
-## 📜 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
 ## 🙏 Acknowledgments
 
 *   Original Transformer paper: "Attention Is All You Need" by Vaswani et al.
 *   Hugging Face for datasets and tokenizers
 *   Weights & Biases for experiment tracking
 *   Helsinki-NLP for the OPUS-100 dataset
+*   Umar's Jamil's explanation on how to implement a transformer from scratch
 
 ## 📚 References
 
