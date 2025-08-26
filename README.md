@@ -1,12 +1,13 @@
 English to Urdu Transformer from Scratch
 ========================================
 
-A complete implementation of the Transformer architecture from scratch using PyTorch for English-to-Urdu neural machine translation. This project demonstrates a full end-to-end implementation including model architecture, training pipeline, evaluation, and inference.
+A complete implementation of the Transformer architecture from scratch using PyTorch for English-to-Urdu neural machine translation. This project demonstrates a full end-to-end implementation including model architecture, training pipeline, evaluation metrics, and inference capabilities.
 
 🎯 Project Overview
 -------------------
 
-This project implements the original Transformer architecture as described in "Attention Is All You Need" (Vaswani et al., 2017) for English-to-Urdu translation. The model achieves competitive performance with approximately **64 million parameters**. 
+This project implements the original Transformer architecture as described in "Attention Is All You Need" (Vaswani et al., 2017) for English-to-Urdu translation. The model achieves competitive performance with approximately **64 million parameters**.
+
 ### Key Features
 
 *   **Complete Transformer Implementation**: Built from scratch with all components (Multi-Head Attention, Positional Encoding, Feed-Forward Networks, etc.)
@@ -50,24 +51,24 @@ The model implements the standard Transformer architecture with:
 
 bash
 
-` pip install torch torchvision torchaudio  pip install datasets tokenizers  pip install wandb torchmetrics nltk  pip install tqdm pathlib   `
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   pip install torch torchvision torchaudio  pip install datasets tokenizers  pip install wandb torchmetrics nltk  pip install tqdm pathlib   `
 
 ### Training
 
 bash
 
-`   python train.py   `
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   python train.py   `
 
 ### Inference
 
 python
 
-`   from train import get_model, get_ds  from config import get_config  import torch  # Load configuration and model  config = get_config()  device = torch.device("cuda" if torch.cuda.is_available() else "cpu")  # Load trained model  train_dataloader, val_dataloader, tokenizer_src, tokenizer_tgt = get_ds(config)  model = get_model(config, tokenizer_src.get_vocab_size(), tokenizer_tgt.get_vocab_size())  # Load weights  model_path = "weights/tmodel_19.pt"  state = torch.load(model_path, map_location=device)  model.load_state_dict(state['model_state_dict'])  # Translate text  def translate(text, model, tokenizer_src, tokenizer_tgt, config, device):      # Implementation in train.py      pass  # Example usage  english_text = "Hello, how are you?"  urdu_translation = translate(english_text, model, tokenizer_src, tokenizer_tgt, config, device)  print(f"English: {english_text}")  print(f"Urdu: {urdu_translation}")   `
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   from train import get_model, get_ds  from config import get_config  import torch  # Load configuration and model  config = get_config()  device = torch.device("cuda" if torch.cuda.is_available() else "cpu")  # Load trained model  train_dataloader, val_dataloader, tokenizer_src, tokenizer_tgt = get_ds(config)  model = get_model(config, tokenizer_src.get_vocab_size(), tokenizer_tgt.get_vocab_size())  # Load weights  model_path = "weights/tmodel_19.pt"  state = torch.load(model_path, map_location=device)  model.load_state_dict(state['model_state_dict'])  # Translate text  def translate(text, model, tokenizer_src, tokenizer_tgt, config, device):      # Implementation in train.py      pass  # Example usage  english_text = "Hello, how are you?"  urdu_translation = translate(english_text, model, tokenizer_src, tokenizer_tgt, config, device)  print(f"English: {english_text}")  print(f"Urdu: {urdu_translation}")   `
 
 📁 Project Structure
 --------------------
 
-`   transformers-from-scratch/  ├── train.py              # Main training script  ├── model.py              # Transformer architecture implementation  ├── config.py             # Configuration settings  ├── dataset.py            # Dataset handling and preprocessing  ├── weights/              # Model checkpoints  ├── tokenizers/           # Trained tokenizers  └── README.md            # This file   `
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   transformers-from-scratch/  ├── train.py              # Main training script  ├── model.py              # Transformer architecture implementation  ├── config.py             # Configuration settings  ├── dataset.py            # Dataset handling and preprocessing  ├── weights/              # Model checkpoints  ├── tokenizers/           # Trained tokenizers  └── README.md            # This file   `
 
 🔧 Configuration
 ----------------
@@ -76,7 +77,7 @@ Key configuration parameters in config.py:
 
 python
 
-`   {      'batch_size': 8,          # Training batch size      'num_epochs': 20,         # Number of training epochs      'lr': 1e-4,              # Learning rate      'seq_len': 350,          # Maximum sequence length      'd_model': 512,          # Model dimension      'lang_src': 'en',        # Source language      'lang_tgt': 'ur',        # Target language      'model_folder': "weights", # Model save directory      'preload': None,         # Checkpoint to resume from  }   `
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   {      'batch_size': 8,          # Training batch size      'num_epochs': 20,         # Number of training epochs      'lr': 1e-4,              # Learning rate      'seq_len': 350,          # Maximum sequence length      'd_model': 512,          # Model dimension      'lang_src': 'en',        # Source language      'lang_tgt': 'ur',        # Target language      'model_folder': "weights", # Model save directory      'preload': None,         # Checkpoint to resume from  }   `
 
 📈 Training Process
 -------------------
@@ -116,19 +117,19 @@ The training pipeline includes:
 
 python
 
-`   class MultiHeadAttentionBlock(nn.Module):      def __init__(self, d_model: int, h: int, dropout: float):          # Implementation with scaled dot-product attention   `
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   class MultiHeadAttentionBlock(nn.Module):      def __init__(self, d_model: int, h: int, dropout: float):          # Implementation with scaled dot-product attention   `
 
 ### 2\. Transformer Architecture (model.py)
 
 python
 
-`   class Transformer(nn.Module):      def __init__(self, encoder, decoder, src_embedding, target_embedding, ...):          # Complete transformer with encoder-decoder architecture   `
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   class Transformer(nn.Module):      def __init__(self, encoder, decoder, src_embedding, target_embedding, ...):          # Complete transformer with encoder-decoder architecture   `
 
 ### 3\. Training Pipeline (train.py)
 
 python
 
-`   def train_model(config):      # Full training loop with validation and checkpointing   `
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   def train_model(config):      # Full training loop with validation and checkpointing   `
 
 📊 Evaluation Metrics
 ---------------------
@@ -144,6 +145,10 @@ The model is evaluated using multiple metrics:
 *   **Training Loss**: Cross-entropy loss during training
     
 
+🌟 Sample Translations
+----------------------
+
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   EnglishUrdu"Hello, how are you?""خوش ؟""What is your name?""تمہارا نام کیا ہے ؟""This is a great day!""یہ ایک بہت بڑی آفتوں میں سے ایک دن ہے"   `
 
 🔬 Technical Details
 --------------------
@@ -223,7 +228,7 @@ To use your own dataset, modify the get\_ds() function in train.py:
 
 python
 
-`   def get_ds(config):      # Replace with your dataset loading logic      ds_raw = load_your_dataset()      # Rest of the preprocessing pipeline   `
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   def get_ds(config):      # Replace with your dataset loading logic      ds_raw = load_your_dataset()      # Rest of the preprocessing pipeline   `
 
 ### Hyperparameter Tuning
 
@@ -231,7 +236,7 @@ Modify config.py to experiment with different settings:
 
 python
 
-`   def get_config():      return {          'batch_size': 16,      # Increase for faster training          'd_model': 768,        # Larger model dimension          'num_epochs': 30,      # More training epochs          'lr': 5e-5,           # Different learning rate      }   `
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   def get_config():      return {          'batch_size': 16,      # Increase for faster training          'd_model': 768,        # Larger model dimension          'num_epochs': 30,      # More training epochs          'lr': 5e-5,           # Different learning rate      }   `
 
 🔍 Model Analysis
 -----------------
@@ -242,7 +247,7 @@ The model stores attention weights for analysis:
 
 python
 
-`   # Access attention scores from the model  attention_scores = model.encoder.layers[0].self_attention_block.attention_scores   `
+Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   # Access attention scores from the model  attention_scores = model.encoder.layers[0].self_attention_block.attention_scores   `
 
 ### Performance Monitoring
 
